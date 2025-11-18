@@ -3,233 +3,430 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MoneyMate: Money Transfering in a modern way.</title>
+    <title>MoneyMate – Luxury Money Transfer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
-        /* --- STARTUP ANIMATION CSS --- */
-        @keyframes fadeInUp {
-            0% {
-                opacity: 0;
-                transform: translateY(20px); /* Start 20px below final position */
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0); /* End at final position */
-            }
+        :root {
+            --gold: #FFD700;
+            --gold-dark: #B8860B;
+            --gold-glow: #FFEA80;
+            --black: #0f0f0f;
+            --dark: #1a1a1a;
         }
 
-        .startup-fade {
-            /* 1.2 second duration, runs once, and stays (forwards) at the final state (opacity: 1) */
-            animation: fadeInUp 1.2s ease-out forwards;
-        }
-        /* --- END STARTUP ANIMATION CSS --- */
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 40px;
-            background-color: #f4f4f4;
-        }
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            /* Initial state for animation */
-            opacity: 0; 
-        }
-        input[type="text"], input[type="number"] {
-            padding: 10px;
-            font-size: 16px;
-            width: 80%;
-            margin: 10px 0;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #007bff;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
             color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Particle Background */
+        #particles {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 420px;
+            margin: 40px auto;
+            padding: 30px;
+            background: rgba(20, 20, 20, 0.85);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6),
+                        0 0 30px rgba(255, 215, 0, 0.2);
+            border: 1px solid var(--gold);
+            position: relative;
+            z-index: 10;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: floatIn 1.4s ease-out forwards;
+        }
+
+        @keyframes floatIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(255,215,0,0.4); }
+            50% { box-shadow: 0 0 40px rgba(255,215,0,0.8); }
+        }
+
+        h1, h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--gold);
+            text-shadow: 0 0 15px rgba(255,215,0,0.5);
+            margin-bottom: 20px;
+        }
+
+        h1 { font-size: 2.2rem; }
+        h2 { font-size: 1.6rem; }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 14px;
+            margin: 15px 0;
+            border: 2px solid var(--gold-dark);
+            border-radius: 12px;
+            background: rgba(30,30,30,0.8);
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 15px rgba(255,215,0,0.5);
+        }
+
+        button {
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 600;
+            background: linear-gradient(45deg, var(--gold), #FFEA80);
+            color: black;
             border: none;
-            border-radius: 5px;
+            border-radius: 12px;
             cursor: pointer;
             margin: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+            position: relative;
+            overflow: hidden;
         }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: 0.6s;
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
         button:hover {
-            background-color: #0056b3;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255,215,0,0.4);
         }
-        .hidden {
-            display: none;
-        }
+
         .selector {
-            margin: 20px 0;
-            max-height: 300px;
+            max-height: 320px;
             overflow-y: auto;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            border: 1px solid var(--gold-dark);
+            border-radius: 12px;
+            background: rgba(15,15,15,0.7);
+            margin: 20px 0;
         }
+
         .option {
-            padding: 12px;
+            padding: 16px;
             cursor: pointer;
-            border-bottom: 1px solid #eee;
-            text-align: left;
-            font-size: 16px;
+            border-bottom: 1px solid rgba(255,215,0,0.1);
+            transition: all 0.3s;
+            font-weight: 500;
         }
+
         .option:hover {
-            background-color: #f0f8ff;
+            background: rgba(255,215,0,0.15);
+            color: var(--gold);
+            transform: scale(1.03);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
-        .option:last-child {
-            border-bottom: none;
-        }
-        .loading img {
-            width: 50px;
-            height: 50px;
-            margin: 20px 0;
-        }
-        .confirmed {
-            color: green;
-            font-size: 24px;
-            margin: 20px 0;
-        }
-        .search-bar {
-            margin: 15px 0;
-        }
+
         .search-bar input {
-            width: 90%;
-            padding: 8px;
-            font-size: 14px;
+            background: rgba(40,40,40,0.8);
+            border: 1px solid var(--gold-dark);
         }
-        /* Custom error message styling */
+
         .error-message {
-            color: #d9534f;
-            font-size: 14px;
-            font-weight: bold;
-            margin-top: -5px;
-            min-height: 20px; /* Prevents layout shift */
+            color: #ff6b6b;
+            font-weight: 600;
+            min-height: 24px;
+            margin-top: 5px;
+        }
+
+        /* Loading Spinner */
+        .loader {
+            width: 80px;
+            height: 80px;
+            border: 6px solid rgba(255,215,0,0.3);
+            border-top: 6px solid var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 40px auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Confirm Modal */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a1a, #0f0f0f);
+            padding: 40px;
+            border-radius: 20px;
+            border: 2px solid var(--gold);
+            text-align: center;
+            box-shadow: 0 0 50px rgba(255,215,0,0.6);
+            animation: modalPop 0.6s ease-out;
+            max-width: 90%;
+        }
+
+        @keyframes modalPop {
+            0% { transform: scale(0.7); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            animation: glowPulse 2s infinite;
+        }
+
+        .modal p {
+            font-size: 1.3rem;
+            margin: 15px 0;
+            color: #ddd;
+        }
+
+        .modal .amount {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--gold);
+            text-shadow: 0 0 20px rgba(255,215,0,0.7);
+        }
+
+        .modal-buttons button {
+            margin: 15px;
+            min-width: 120px;
+        }
+
+        .cancel-btn {
+            background: #444;
+            color: white;
+        }
+
+        .cancel-btn:hover {
+            background: #666;
+        }
+
+        /* Gold Coins Falling */
+        .coin {
+            position: absolute;
+            font-size: 30px;
+            pointer-events: none;
+            animation: fall linear forwards;
+            z-index: 99;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="container startup-fade">
-    <!-- Home Menu -->
-    <div id="home">
-        <h2>Enter target recipent.</h2>
-        <input type="text" id="dataInput" placeholder="Phone Number">
-        <!-- New element for displaying errors -->
-        <p id="errorMessage" class="error-message"></p>
-        <br>
-        <button onclick="goToSelector()">Confirm</button>
-    </div>
+    <canvas id="particles"></canvas>
 
-    <!-- Number Selector -->
-    <div id="selector" class="hidden">
-        <h2>Select ammount to send (0.01 – 100.00)</h2>
-        
-        <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Search value..." onkeyup="filterOptions()">
+    <div class="container">
+        <!-- Home -->
+        <div id="home">
+            <h1>MoneyMate</h1>
+            <h2>Send Money in Style</h2>
+            <input type="text" id="dataInput" placeholder="Recipient Phone / @Username">
+            <p id="errorMessage" class="error-message"></p>
+            <button onclick="goToSelector()">Continue →</button>
         </div>
 
-        <div class="selector" id="optionList">
-            <!-- Options generated by JS -->
+        <!-- Amount Selector -->
+        <div id="selector" class="hidden">
+            <h2>Select Amount (CAD)</h2>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Quick search amount..." onkeyup="filterOptions()">
+            </div>
+            <div class="selector" id="optionList"></div>
+            <button onclick="goBack()">← Back</button>
         </div>
 
-        <button onclick="goBack()">Back</button>
-    </div>
+        <!-- Loading -->
+        <div id="loading" class="hidden">
+            <h2>Processing Transaction...</h2>
+            <div class="loader"></div>
+            <p>Please wait securely</p>
+        </div>
 
-    <!-- Loading -->
-    <div id="loading" class="hidden">
-        <div class="loading">
-            <img src="https://i.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.webp" alt="Loading...">
-            <p>Processing...</p>
+        <!-- Confirmed (temp hidden) -->
+        <div id="confirmed" class="hidden">
+            <h2>Transaction Complete!</h2>
+            <p>Sent <strong id="selectedValue"></strong> CAD</p>
+            <p>to <strong id="inputData"></strong></p>
+            <button onclick="restart()">← Send Again</button>
         </div>
     </div>
 
-    <!-- Confirmed -->
-    <div id="confirmed" class="hidden">
-        <h2 class="confirmed">Confirmed!</h2>
-        <p>Sent: <strong id="selectedValue"> CAD</strong></p>
-        <p>to <strong id="inputData"></strong></p>
-        <button onclick="restart()">Home</button>
+    <!-- Confirm Modal -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-content">
+            <h2>Confirm Transfer</h2>
+            <p>Send</p>
+            <div class="amount">$<span id="modalAmount"></span></div>
+            <p>to <strong id="modalRecipient"></strong>?</p>
+            <div class="modal-buttons">
+                <button class="cancel-btn" onclick="closeModal()">Cancel</button>
+                <button onclick="confirmSend()">Yes, Send! ✔</button>
+            </div>
+        </div>
     </div>
-</div>
 
-<script>
-    let selectedNum = null;
-    let userInput = null;
-
-    // Generate options from 0.01 to 100.00
-    function generateOptions() {
-        const list = document.getElementById("optionList");
-        list.innerHTML = '';
-
-        for (let i = 0.01; i <= 100.00; i += 0.01) {
-            const value = i.toFixed(2);
-            const div = document.createElement("div");
-            div.className = "option";
-            div.textContent = value;
-            div.onclick = () => selectValue(value);
-            list.appendChild(div);
-        }
-    }
-
-    // Filter options
-    function filterOptions() {
-        const query = document.getElementById("searchInput").value.toLowerCase();
-        const options = document.querySelectorAll(".option");
-        options.forEach(opt => {
-            const text = opt.textContent;
-            opt.style.display = text.includes(query) ? "" : "none";
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // Particles Background
+        particlesJS('particles', {
+            particles: {
+                number: 80,
+                color: '#FFD700',
+                shape: 'circle',
+                opacity: { value: 0.5, random: true },
+                size: { value: 3, random: true },
+                line_linked: { enable: true, distance: 150, color: '#FFD700', opacity: 0.2, width: 1 },
+                move: { enable: true, speed: 2, direction: 'none', random: false }
+            },
+            interactivity: {
+                events: { onhover: { enable: true, mode: 'repulse' } }
+            }
         });
-    }
 
-    // Navigation
-    function goToSelector() {
-        userInput = document.getElementById("dataInput").value.trim();
-        const errorMessage = document.getElementById("errorMessage");
+        let selectedNum = null;
+        let userInput = null;
 
-        if (!userInput) {
-            // Replaced alert() with an in-page error message
-            errorMessage.textContent = "Please enter a phone number or recipient.";
-            return;
+        function generateOptions() {
+            const list = document.getElementById("optionList");
+            list.innerHTML = '';
+            for (let i = 0.01; i <= 100.00; i += 0.01) {
+                const value = i.toFixed(2);
+                const div = document.createElement("div");
+                div.className = "option";
+                div.textContent = "$" + value;
+                div.onclick = () => openConfirmModal(value);
+                list.appendChild(div);
+            }
         }
-        
-        // Clear error and proceed
-        errorMessage.textContent = "";
-        document.getElementById("home").classList.add("hidden");
-        document.getElementById("selector").classList.remove("hidden");
-        generateOptions();
-    }
 
-    function goBack() {
-        document.getElementById("selector").classList.add("hidden");
-        document.getElementById("home").classList.remove("hidden");
-    }
+        function filterOptions() {
+            const query = document.getElementById("searchInput").value.toLowerCase().replace('$','');
+            const options = document.querySelectorAll(".option");
+            options.forEach(opt => {
+                const text = opt.textContent.toLowerCase();
+                opt.style.display = text.includes(query) ? "" : "none";
+            });
+        }
 
-    function selectValue(val) {
-        selectedNum = val;
-        document.getElementById("selector").classList.add("hidden");
-        document.getElementById("loading").classList.remove("hidden");
+        function goToSelector() {
+            userInput = document.getElementById("dataInput").value.trim();
+            const error = document.getElementById("errorMessage");
+            if (!userInput) {
+                error.textContent = "Recipient is required!";
+                return;
+                return;
+            }
+            error.textContent = "";
+            document.getElementById("home").classList.add("hidden");
+            document.getElementById("selector").classList.remove("hidden");
+            generateOptions();
+        }
 
-        setTimeout(() => {
-            document.getElementById("loading").classList.add("hidden");
-            document.getElementById("confirmed").classList.remove("hidden");
-            document.getElementById("selectedValue").textContent = selectedNum;
-            document.getElementById("inputData").textContent = userInput;
-        }, 1500);
-    }
+        function goBack() {
+            document.getElementById("selector").classList.add("hidden");
+            document.getElementById("home").classList.remove("hidden");
+        }
 
-    function restart() {
-        document.getElementById("confirmed").classList.add("hidden");
-        document.getElementById("home").classList.remove("hidden");
-        document.getElementById("dataInput").value = "";
-        // Ensure error message is cleared on restart
-        document.getElementById("errorMessage").textContent = "";
-        selectedNum = null;
-        userInput = null;
-    }
-</script>
+        function openConfirmModal(amount) {
+            selectedNum = amount;
+            document.getElementById("modalAmount").textContent = amount;
+            document.getElementById("modalRecipient").textContent = userInput;
+            document.getElementById("confirmModal").classList.add("active");
+        }
 
+        function closeModal() {
+            document.getElementById("confirmModal").classList.remove("active");
+        }
+
+        function confirmSend() {
+            closeModal();
+            document.getElementById("selector").classList.add("hidden");
+            document.getElementById("loading").classList.remove("hidden");
+
+            // Trigger confetti & gold coins
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#FFD700', '#FFA500', '#FFEA80'] });
+
+            // Gold coins falling
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => createCoin(), i * 100);
+            }
+
+            setTimeout(() => {
+                document.getElementById("loading").classList.add("hidden");
+                document.getElementById("confirmed").classList.remove("hidden");
+                document.getElementById("selectedValue").textContent = selectedNum;
+                document.getElementById("inputData").textContent = userInput;
+            }, 2500);
+        }
+
+        function createCoin() {
+            const coin = document.createElement("div");
+            coin.className = "coin";
+            coin.textContent = "₿"; // or use a gold coin icon
+            coin.style.left = Math.random() * 100 + "vw";
+            coin.style.animationDuration = (Math.random() * 3 + 2) + "s";
+            coin.style.opacity = Math.random() * 0.8 + 0.4;
+            document.body.appendChild(coin);
+
+            setTimeout(() => coin.remove(), 5000);
+        }
+
+        function restart() {
+            document.getElementById("confirmed").classList.add("hidden");
+            document.getElementById("home").classList.remove("hidden");
+            document.getElementById("dataInput").value = "";
+            document.getElementById("errorMessage").textContent = "";
+            selectedNum = null;
+            userInput = null;
+        }
+    </script>
 </body>
 </html>
