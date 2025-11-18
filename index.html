@@ -5,6 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MoneyMate: Money Transfering in a modern way.</title>
     <style>
+        /* --- STARTUP ANIMATION CSS --- */
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px); /* Start 20px below final position */
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0); /* End at final position */
+            }
+        }
+
+        .startup-fade {
+            /* 1.2 second duration, runs once, and stays (forwards) at the final state (opacity: 1) */
+            animation: fadeInUp 1.2s ease-out forwards;
+        }
+        /* --- END STARTUP ANIMATION CSS --- */
+
+
         body {
             font-family: Arial, sans-serif;
             text-align: center;
@@ -18,6 +37,8 @@
             background: white;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            /* Initial state for animation */
+            opacity: 0; 
         }
         input[type="text"], input[type="number"] {
             padding: 10px;
@@ -79,15 +100,25 @@
             padding: 8px;
             font-size: 14px;
         }
+        /* Custom error message styling */
+        .error-message {
+            color: #d9534f;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: -5px;
+            min-height: 20px; /* Prevents layout shift */
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="container startup-fade">
     <!-- Home Menu -->
     <div id="home">
         <h2>Enter target recipent.</h2>
         <input type="text" id="dataInput" placeholder="Phone Number">
+        <!-- New element for displaying errors -->
+        <p id="errorMessage" class="error-message"></p>
         <br>
         <button onclick="goToSelector()">Confirm</button>
     </div>
@@ -156,10 +187,16 @@
     // Navigation
     function goToSelector() {
         userInput = document.getElementById("dataInput").value.trim();
+        const errorMessage = document.getElementById("errorMessage");
+
         if (!userInput) {
-            alert("Please enter something first.");
+            // Replaced alert() with an in-page error message
+            errorMessage.textContent = "Please enter a phone number or recipient.";
             return;
         }
+        
+        // Clear error and proceed
+        errorMessage.textContent = "";
         document.getElementById("home").classList.add("hidden");
         document.getElementById("selector").classList.remove("hidden");
         generateOptions();
@@ -187,6 +224,8 @@
         document.getElementById("confirmed").classList.add("hidden");
         document.getElementById("home").classList.remove("hidden");
         document.getElementById("dataInput").value = "";
+        // Ensure error message is cleared on restart
+        document.getElementById("errorMessage").textContent = "";
         selectedNum = null;
         userInput = null;
     }
